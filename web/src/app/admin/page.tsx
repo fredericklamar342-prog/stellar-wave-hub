@@ -31,6 +31,7 @@ interface Project {
   stellar_network?: string;
   website_url?: string;
   github_url?: string;
+  github_repos?: { label: string; url: string }[];
   avg_rating?: number;
   rating_count?: number;
   rejection_reason?: string;
