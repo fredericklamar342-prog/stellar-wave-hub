@@ -259,6 +259,29 @@ Replace `YOUR_GITHUB_USERNAME`, `Your Name`, `YOUR_X_HANDLE`, and the role/proje
 		<sub>Researcher — KindFi</sub>
 	</div>
 
+	<div
+		style="display:inline-block;width:130px;vertical-align:top;text-align:center;margin:8px"
+	>
+		<a href="https://github.com/victor-134">
+			<img
+				src="https://github.com/victor-134.png"
+				width="80"
+				style="border-radius:50%"
+				alt="victor-134"
+			/>
+			<br />
+			<sub><b>victor-134</b></sub>
+		</a>
+		<br />
+		<a href="https://github.com/victor-134"
+			><img
+				src="https://img.shields.io/badge/-GitHub-181717?logo=github&logoColor=white&style=flat-square"
+				alt="GitHub"
+		/></a>
+		<br />
+		<sub>Researcher — Trustless Work</sub>
+	</div>
+
 	<!-- Add your <div> above this line -->
 </div>
 <!-- CONTRIBUTORS-END -->
