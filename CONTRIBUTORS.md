@@ -6,7 +6,7 @@ Thank you to everyone who has contributed to Stellar Wave Hub! Add yourself belo
 
 1. Fork the repo and create a branch
 2. Copy the template below and fill in your details
-3. Add it inside the `<!-- CONTRIBUTORS-START -->` section
+3. Add it inside the `CONTRIBUTORS-START` section
 4. Open a PR with the title: `docs: add [your-name] to contributors`
 
 **Template:**
@@ -227,11 +227,7 @@ Replace `YOUR_GITHUB_USERNAME`, `Your Name`, `YOUR_X_HANDLE`, and the role/proje
 			<sub><b>ATHCornerstone</b></sub>
 		</a>
 		<br />
-		<a href="https://github.com/fredericklamar342-prog"
-			><img
-				src="https://img.shields.io/badge/-GitHub-181717?logo=github&logoColor=white&style=flat-square"
-				alt="GitHub"
-		/></a>
+		<a href="https://github.com/fredericklamar342-prog"><img src="https://img.shields.io/badge/-GitHub-181717?logo=github&logoColor=white&style=flat-square" alt="GitHub" /></a>
 		<br />
 		<sub>Researcher — BeEnergy, Trustless Work</sub>
 	</div>
