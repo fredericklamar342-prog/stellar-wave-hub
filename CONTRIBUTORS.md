@@ -218,7 +218,7 @@ Replace `YOUR_GITHUB_USERNAME`, `Your Name`, `YOUR_X_HANDLE`, and the role/proje
 	>
 		<a href="https://github.com/fredericklamar342-prog">
 			<img
-				src="https://avatars.githubusercontent.com/u/263657850?v=4"
+				src="https://github.com/fredericklamar342-prog.png"
 				width="80"
 				style="border-radius:50%"
 				alt="ATHCornerstone"
