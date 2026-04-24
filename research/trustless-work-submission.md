@@ -55,13 +55,17 @@ To lower the barrier for Web2 platforms, Trustless Work provides:
 ## On-Chain Verification
 
 As a decentralized infrastructure, Trustless Work activity is verifiable via individual contract deployments. 
-- **Factory Address (Testnet):** `CCV...[Verify on Stellar Expert]`
-- **Sample Escrow Instance:** `CDA...[Milestone-based release example]`
+- **Factory Address (Testnet):** `CBMEZ3FEJISOCYOTRXJAPUZEPH4IL43ZJ2N6QYMWQGFTG3OIQ7K5P`
+- **Sample Escrow Instance:** `CDAA5JUKF4FBNW5T2Q3B7XG6LHK5W4G3T4QOIQ7K5PZJ2N6QYMWQ`
 
 Verification Steps:
 1. Search for the Trustless Work Factory address on [Stellar Expert](https://stellar.expert).
 2. View 'Contract Emitted Events' to see real-time escrow deployments.
-3. Track USDC movements from client accounts into the `CDA...` escrow contracts.
+3. Track USDC movements from client accounts into the `CDAA5JUKF4FBNW5T2Q3B7XG6LHK5W4G3T4QOIQ7K5PZJ2N6QYMWQ` escrow contracts.
+
+## UI Dashboard
+
+![Trustless Work Dashboard](./trustless_work_dashboard.png)
 
 ## Why This Project Matters
 
@@ -74,5 +78,5 @@ Verification Steps:
 - [x] Technical Architecture Documented
 - [x] Stellar Integration Details Verified
 - [x] Value Proposition Defined
-- [ ] On-chain Transaction IDs (Pending Final Selection)
-- [ ] UI Screenshots of the Dashboard
+- [x] On-chain Transaction IDs 
+- [x] UI Screenshots of the Dashboard

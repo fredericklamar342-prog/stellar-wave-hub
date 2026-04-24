@@ -233,7 +233,7 @@ Replace `YOUR_GITHUB_USERNAME`, `Your Name`, `YOUR_X_HANDLE`, and the role/proje
 				alt="GitHub"
 		/></a>
 		<br />
-		<sub>Researcher — BeEnergy</sub>
+		<sub>Researcher — BeEnergy, Trustless Work</sub>
 	</div>
 
 	<div
