@@ -8,7 +8,10 @@
 //! # Public interface
 //!
 //! ## Admin-only
-//! - `initialize(admin, token, fee)` — one-time setup.
+//! - `initialize(admin, token, fee, version)` — one-time setup.
+- `get_version()` — returns the current contract version.
+- `upgrade_version(admin, new_version)` — update the version (admin only).
+
 //! - `register_project(admin, project_id, account_id, payer)` — add project; `payer` pays fee.
 //! - `remove_project(admin, project_id)` — remove a project.
 //! - `set_fee(admin, amount)` — change the registration fee.
@@ -33,6 +36,8 @@ const TOKEN_KEY: Symbol = symbol_short!("TOKEN");
 const FEE_KEY: Symbol = symbol_short!("FEE");
 const TREASURY_KEY: Symbol = symbol_short!("TREASURY");
 const COLLECTED_KEY: Symbol = symbol_short!("COLLECT");
+const VERSION_KEY: Symbol = symbol_short!("VERSION");
+
 
 // ── Types ───────────────────────────────────────────────────────────────────
 
@@ -58,7 +63,9 @@ impl WaveHubRegistry {
     /// * `token`   — the Soroban token contract used for fee payments
     ///               (e.g. the native XLM SAC wrapper).
     /// * `fee`     — registration fee in stroops (1 XLM = 10_000_000 stroops).
-    pub fn initialize(env: Env, admin: Address, token: Address, fee: i128) {
+    /// * `version` — current contract version (semver format).
+    pub fn initialize(env: Env, admin: Address, token: Address, fee: i128, version: String) {
+
         if env.storage().instance().has(&ADMIN_KEY) {
             panic!("already initialized");
         }
@@ -70,7 +77,11 @@ impl WaveHubRegistry {
         env.storage().instance().set(&TREASURY_KEY, &admin); // default treasury = admin
         env.storage().instance().set(&COLLECTED_KEY, &0i128);
 
+        validate_version(&version);
+        env.storage().instance().set(&VERSION_KEY, &version);
+
         let projects: Vec<Symbol> = Vec::new(&env);
+
         env.storage().instance().set(&PROJECTS_KEY, &projects);
     }
 
@@ -205,6 +216,27 @@ impl WaveHubRegistry {
         collected
     }
 
+    /// Update the contract version. Emits a ContractUpgraded event.
+    pub fn upgrade_version(env: Env, admin: Address, new_version: String) {
+        Self::require_admin(&env, &admin);
+        admin.require_auth();
+        validate_version(&new_version);
+
+        let old_version: String = env
+            .storage()
+            .instance()
+            .get(&VERSION_KEY)
+            .unwrap_or_else(|| String::from_str(&env, "0.0.0"));
+
+        env.storage().instance().set(&VERSION_KEY, &new_version);
+
+        env.events().publish(
+            (Symbol::new(&env, "ContractUpgraded"),),
+            (old_version, new_version),
+        );
+    }
+
+
     // ── Public queries ──────────────────────────────────────────────────
 
     pub fn is_registered(env: Env, project_id: Symbol) -> bool {
@@ -249,6 +281,14 @@ impl WaveHubRegistry {
             .unwrap_or(0i128)
     }
 
+    pub fn get_version(env: Env) -> String {
+        env.storage()
+            .instance()
+            .get(&VERSION_KEY)
+            .expect("not initialized")
+    }
+
+
     // ── Internals ───────────────────────────────────────────────────────
 
     fn require_admin(env: &Env, caller: &Address) {
@@ -262,6 +302,39 @@ impl WaveHubRegistry {
         }
     }
 }
+
+fn validate_version(version: &String) {
+    let len = version.len() as usize;
+    if len == 0 || len > 32 {
+        panic!("invalid version length");
+    }
+
+    let mut buf = [0u8; 32];
+    version.copy_into_slice(&mut buf[..len]);
+
+    let mut dot_count = 0;
+    let mut part_len = 0;
+
+    for i in 0..len {
+        let b = buf[i];
+        if b == b'.' {
+            if part_len == 0 {
+                panic!("invalid version format");
+            }
+            dot_count += 1;
+            part_len = 0;
+        } else if b >= b'0' && b <= b'9' {
+            part_len += 1;
+        } else {
+            panic!("invalid version characters");
+        }
+    }
+
+    if dot_count != 2 || part_len == 0 {
+        panic!("invalid version format");
+    }
+}
+
 
 // ── Tests ────────────────────────────────────────────────────────────────────
 
@@ -299,9 +372,12 @@ mod tests {
         sac_admin.mint(&payer, &100_000_000);
 
         // Initialize
-        client.initialize(&admin, &token_addr, &fee);
+        let version = String::from_str(&env, "1.0.0");
+        client.initialize(&admin, &token_addr, &fee, &version);
         assert_eq!(client.get_fee(), fee);
         assert_eq!(client.get_admin(), admin);
+        assert_eq!(client.get_version(), version);
+
 
         // Register a project — payer pays the fee
         let project_account = Address::generate(&env);
@@ -348,7 +424,8 @@ mod tests {
         let project_account = Address::generate(&env);
 
         // Zero fee — no token transfer needed
-        client.initialize(&admin, &token_addr, &0i128);
+        client.initialize(&admin, &token_addr, &0i128, &String::from_str(&env, "1.0.0"));
+
         client.register_project(&admin, &symbol_short!("free"), &project_account, &payer);
         assert!(client.is_registered(&symbol_short!("free")));
         assert_eq!(client.get_treasury_balance(), 0);
@@ -363,8 +440,9 @@ mod tests {
         let client = WaveHubRegistryClient::new(&env, &contract_id);
         let admin = Address::generate(&env);
         let token_addr = setup_token(&env, &admin);
-        client.initialize(&admin, &token_addr, &0i128);
-        client.initialize(&admin, &token_addr, &0i128);
+        client.initialize(&admin, &token_addr, &0i128, &String::from_str(&env, "1.0.0"));
+        client.initialize(&admin, &token_addr, &0i128, &String::from_str(&env, "1.0.0"));
+
     }
 
     #[test]
@@ -376,8 +454,9 @@ mod tests {
         let client = WaveHubRegistryClient::new(&env, &contract_id);
         let admin = Address::generate(&env);
         let token_addr = setup_token(&env, &admin);
-        client.initialize(&admin, &token_addr, &0i128);
+        client.initialize(&admin, &token_addr, &0i128, &String::from_str(&env, "1.0.0"));
         client.withdraw_fees(&admin);
+
     }
 
     #[test]
@@ -397,7 +476,8 @@ mod tests {
         sac_admin.mint(&payer, &50_000_000);
 
         let fee: i128 = 1_000_000;
-        client.initialize(&admin, &token_addr, &fee);
+        client.initialize(&admin, &token_addr, &fee, &String::from_str(&env, "1.0.0"));
+
 
         // Change treasury to a different address
         client.set_treasury(&admin, &treasury);
@@ -410,4 +490,35 @@ mod tests {
         client.withdraw_fees(&admin);
         assert_eq!(token_client.balance(&treasury), fee);
     }
+
+    #[test]
+    fn test_upgrade_version() {
+        let env = Env::default();
+        env.mock_all_auths();
+        let contract_id = env.register(WaveHubRegistry, ());
+        let client = WaveHubRegistryClient::new(&env, &contract_id);
+        let admin = Address::generate(&env);
+        let token_addr = setup_token(&env, &admin);
+
+        client.initialize(&admin, &token_addr, &0, &String::from_str(&env, "1.0.0"));
+        assert_eq!(client.get_version(), String::from_str(&env, "1.0.0"));
+
+        let new_version = String::from_str(&env, "1.1.0");
+        client.upgrade_version(&admin, &new_version);
+        assert_eq!(client.get_version(), new_version);
+    }
+
+    #[test]
+    #[should_panic(expected = "invalid version format")]
+    fn test_invalid_version_panics() {
+        let env = Env::default();
+        env.mock_all_auths();
+        let contract_id = env.register(WaveHubRegistry, ());
+        let client = WaveHubRegistryClient::new(&env, &contract_id);
+        let admin = Address::generate(&env);
+        let token_addr = setup_token(&env, &admin);
+
+        client.initialize(&admin, &token_addr, &0, &String::from_str(&env, "1.0"));
+    }
 }
+
