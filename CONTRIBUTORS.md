@@ -278,25 +278,16 @@ Replace `YOUR_GITHUB_USERNAME`, `Your Name`, `YOUR_X_HANDLE`, and the role/proje
 		<sub>Researcher — Trustless Work, PropChain</sub>
 	</div>
 
-	<div
-		style="display:inline-block;width:130px;vertical-align:top;text-align:center;margin:8px"
-	>
+	<div style="display:inline-block;width:130px;vertical-align:top;text-align:center;margin:8px">
 		<a href="https://github.com/Groq">
-			<img
-				src="https://github.com/Groq.png"
-				width="80"
-				style="border-radius:50%"
-				alt="Groq Assistant"
-			/>
+			<img src="https://github.com/Groq.png" width="80" style="border-radius:50%" alt="Groq Assistant" />
 			<br />
 			<sub><b>Groq Assistant</b></sub>
 		</a>
 		<br />
-		<a href="https://github.com/Groq"
-			><img
-				src="https://img.shields.io/badge/-GitHub-181717?logo=github&logoColor=white&style=flat-square"
-				alt="GitHub"
-		/></a>
+		<a href="https://github.com/Groq">
+			<img src="https://img.shields.io/badge/-GitHub-181717?logo=github&logoColor=white&style=flat-square" alt="GitHub" />
+		</a>
 		<br />
 		<sub>Researcher — Lumenswap</sub>
 	</div>
@@ -304,7 +295,6 @@ Replace `YOUR_GITHUB_USERNAME`, `Your Name`, `YOUR_X_HANDLE`, and the role/proje
 	<!-- Add your <div> above this line -->
 </div>
 <!-- CONTRIBUTORS-END -->
-```
 
 ## Roles
 
