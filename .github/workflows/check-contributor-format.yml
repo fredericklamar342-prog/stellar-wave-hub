@@ -115,10 +115,10 @@ jobs:
                   '(`https://github.com/your-username`).'
                 );
               }
-              if (!/https:\/\/github\.com\/[A-Za-z0-9_-]+\.png/.test(checkIn)) {
+              if (!/<img\s+[^>]*src="https:\/\/github\.com\/[A-Za-z0-9_-]+\.png/.test(checkIn) && !/avatars\.githubusercontent\.com/.test(checkIn)) {
                 errors.push(
                   '**Missing avatar image**: Your block must include your GitHub avatar ' +
-                  '(`https://github.com/your-username.png`).'
+                  '(`https://github.com/your-username.png` or an avatars.githubusercontent.com link).'
                 );
               }
               if (!/<sub><b>[^<]+<\/b><\/sub>/.test(checkIn)) {
@@ -126,12 +126,12 @@ jobs:
                   '**Missing name**: Include your display name as `<sub><b>Your Name</b></sub>`.'
                 );
               }
-              if (!/<img src="https:\/\/img\.shields\.io\/badge\/-GitHub/.test(checkIn)) {
+              if (!/<img\s+[^>]*src="https:\/\/img\.shields\.io\/badge\/-GitHub/.test(checkIn)) {
                 errors.push(
                   '**Missing GitHub badge**: Include the GitHub badge from the template.'
                 );
               }
-              if (!/<sub>[A-Za-z][\w\s]* — .+<\/sub>/.test(checkIn)) {
+              if (!/<sub>[A-Za-z][\w\s]*\s*[\-—]\s*.+<\/sub>/.test(checkIn)) {
                 errors.push(
                   '**Missing role/projects line**: Include a role line such as ' +
                   '`<sub>Researcher — StellarPay, LumenSwap</sub>`.'
